@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>runFromHaze</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Find available rooms in FSKTM">
+    <meta name="keywords" content="Empty room, FSKTM, Haze">
+    <meta name="author" content="Desmond Yeoh">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=B612:400,700&display=swap" rel="stylesheet">
+    <style type="text/css">
+        * {
+            font-family: 'B612', sans-serif;
+        }
+        h1 {
+            margin-bottom: 0px;
+        }
+        #desc {
+            font-size: 0.8em;
+            color: #444;
+            margin: 5px 0 0;
+        }
+        .timebar {
+            display: inline-block;
+            font-weight: 700;
+            margin-top: 30px;
+            color: #555;
+            padding: 5px 20px;
+        }
+        .timebarday {
+            display: inline-block;
+            margin: 0;
+            padding: 10px;
+            font-weight: 700;
+            margin-top: 30px;
+            color: #111;
+            background-color: #f4f4f4;
+        }
+        .classroom-box {
+            width: 90%;
+        }
+        .classroom {
+            display: inline-block;
+            border-radius: 15px;
+            padding: 10px;
+            margin: 2px 6px;
+            background-color: #efefef;
+            color: #333;
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <h1>runFromHaze</h1>
+        <p id='desc'>available classrooms in fsktm</p>
+        <div id='box'></div>
+    </center>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function sleep(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        let days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+        let data = {"MONDAY": [["0800", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["0900", ["A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT3", "B_BT4", "B_BT5", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1000", ["A_CCNA", "A_ML", "A_MM2", "B_BT1", "B_BT3", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1100", ["A_CCNA", "A_ML", "A_MM2", "B_BT1", "B_BT3", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1200", ["A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT2", "B_BT5", "B_iOS"]], ["1300", ["A_CCNA", "A_ML", "A_MM2", "B_BT2", "B_BT4", "B_DK1", "B_DK2", "B_iOS"]], ["1400", ["A_CCNA", "A_MM1", "A_MM2", "B_MM3", "B_MS", "B_iOS"]], ["1500", ["A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT5", "B_MM6", "B_MS", "B_iOS"]], ["1600", ["A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT5", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1700", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT3", "B_BT4", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1800", ["A_BK", "A_CCNA", "A_MM1", "B_BT3", "B_BT4", "B_MS", "B_iOS"]], ["1900", ["A_BK", "A_CCNA", "A_MM1", "B_BT3", "B_BT4", "B_MS", "B_iOS"]], ["2000", ["A_BK", "A_CCNA", "A_MM1", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_MS", "B_iOS"]]], "TUESDAY": [["0800", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["0900", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT4", "B_BT5", "B_MM3", "B_MM4", "B_MS", "B_iOS"]], ["1000", ["A_BK", "A_BK2", "A_MM1", "B_BT2", "B_BT5", "B_MS", "B_iOS"]], ["1100", ["A_BK2", "A_MM1", "B_BT2", "B_BT5", "B_MS", "B_iOS"]], ["1200", ["A_BK2", "A_MM1", "A_MM2", "B_BT1", "B_BT3", "B_BT5", "B_DK1", "B_MM6", "B_MS", "B_iOS"]], ["1300", ["A_BK2", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT3", "B_BT4", "B_BT5", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1400", ["A_BK2", "A_CCNA", "B_BT1", "B_BT4", "B_BT5", "B_iOS"]], ["1500", ["A_BK2", "A_CCNA", "B_BT1", "B_BT2", "B_BT5", "B_iOS"]], ["1600", ["A_BK", "A_BK2", "A_CCNA", "A_MM1", "B_BT1", "B_DK2", "B_MM3", "B_MM6", "B_iOS"]], ["1700", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_iOS"]], ["1800", ["A_BK2", "B_BT4", "B_MS", "B_iOS"]], ["1900", ["A_BK2", "B_BT2", "B_BT4", "B_BT5", "B_MS", "B_iOS"]], ["2000", ["A_BK2", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_MS", "B_iOS"]]], "WEDNESDAY": [["0800", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["0900", ["A_BK", "A_BK2", "A_ML", "A_MM1", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_MM4", "B_MM6", "B_iOS"]], ["1000", ["A_BK", "A_BK2", "A_ML", "A_MM1", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_iOS"]], ["1100", ["B_DK1", "B_DK2", "B_MM4", "B_MS", "B_iOS"]], ["1200", ["A_BK2", "A_ML", "A_MM1", "A_MM2", "B_DK1", "B_MM4", "B_MS", "B_iOS"]], ["1300", ["A_BK2", "A_CCNA", "A_ML", "A_MM2", "B_DK1", "B_MM3", "B_MS", "B_iOS"]], ["1400", ["A_BK2", "A_MM1", "B_BT1", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_iOS"]], ["1500", ["B_BT1", "B_BT4", "B_BT5", "B_DK1", "B_iOS"]], ["1600", ["A_BK", "A_CCNA", "B_BT1", "B_BT5", "B_DK1", "B_DK2", "B_iOS"]], ["1700", ["A_BK", "A_CCNA", "A_ML", "B_BT1", "B_DK1", "B_DK2", "B_MM4", "B_MS", "B_iOS"]], ["1800", ["A_BK", "A_BK2", "A_CCNA", "B_BT1", "B_BT3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1900", ["A_BK", "A_BK2", "A_CCNA", "B_BT1", "B_BT3", "B_BT4", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["2000", ["A_BK", "A_BK2", "A_CCNA", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]]], "THURSDAY": [["0800", ["A_BK", "A_BK2", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["0900", ["A_BK2", "A_ML", "A_MM1", "A_MM2", "B_BT3", "B_BT4", "B_BT5", "B_MM6", "B_MS", "B_iOS"]], ["1000", ["A_BK2", "A_CCNA", "A_ML", "A_MM2", "B_BT1", "B_BT4", "B_BT5", "B_iOS"]], ["1100", ["A_BK2", "A_CCNA", "B_BT1", "B_BT5", "B_DK1", "B_DK2", "B_iOS"]], ["1200", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "B_BT1", "B_BT2", "B_BT5", "B_MS", "B_iOS"]], ["1300", ["A_BK2", "A_CCNA", "A_ML", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_MM6", "B_MS", "B_iOS"]], ["1400", ["A_BK", "A_ML", "A_MM1", "A_MM2", "B_MS", "B_iOS"]], ["1500", ["A_BK", "A_ML", "A_MM1", "B_BT2", "B_MM3", "B_MS", "B_iOS"]], ["1600", ["A_CCNA", "A_ML", "A_MM2", "B_BT1", "B_DK1", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1700", ["A_BK2", "A_CCNA", "A_ML", "A_MM2", "B_BT1", "B_BT4", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1800", ["A_BK", "A_BK2", "A_CCNA", "B_BT2", "B_BT4", "B_MM6", "B_MS", "B_iOS"]], ["1900", ["A_BK", "A_BK2", "A_CCNA", "B_BT2", "B_BT3", "B_BT4", "B_MM6", "B_MS", "B_iOS"]], ["2000", ["A_BK", "A_BK2", "A_CCNA", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_MM6", "B_MS", "B_iOS"]]], "FRIDAY": [["0800", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["0900", ["A_BK2", "A_CCNA", "A_ML", "A_MM2", "B_BT1", "B_DK1", "B_MS", "B_iOS"]], ["1000", ["A_BK2", "A_CCNA", "A_ML", "A_MM2", "B_DK1", "B_MS", "B_iOS"]], ["1100", ["A_BK2", "A_CCNA", "A_ML", "A_MM2", "B_DK1", "B_DK2", "B_MS", "B_iOS"]], ["1200", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1300", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1400", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1500", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1600", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1700", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1800", ["A_BK", "A_CCNA", "A_MM2", "B_BT3", "B_BT4", "B_BT5", "B_MS", "B_iOS"]], ["1900", ["A_BK", "A_CCNA", "A_MM2", "B_BT3", "B_BT4", "B_BT5", "B_MS", "B_iOS"]], ["2000", ["A_BK", "A_CCNA", "A_MM2", "B_BT3", "B_BT4", "B_BT5", "B_MS", "B_iOS"]]], "SATURDAY": [["0800", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["0900", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1000", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1100", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1200", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1300", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1400", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1500", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1600", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1700", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1800", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1900", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["2000", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]]], "SUNDAY": [["0800", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["0900", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1000", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1100", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1200", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1300", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1400", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1500", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1600", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1700", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1800", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["1900", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]], ["2000", ["A_BK", "A_BK2", "A_CCNA", "A_ML", "A_MM1", "A_MM2", "B_BT1", "B_BT2", "B_BT3", "B_BT4", "B_BT5", "B_DK1", "B_DK2", "B_MM3", "B_MM4", "B_MM6", "B_MS", "B_iOS"]]]};
+        // var data = {{ data|safe }};
+
+        function renderDay(day) {
+            let daydata = data[day];
+            let timehtml = '';
+            timehtml += '<div>';
+            timehtml += '<p class="timebar timebarday" onClick="renderDay(\'MONDAY\')">'+(day=='MONDAY'?day: 'Mo')+'</p>';
+            timehtml += '<p class="timebar timebarday" onClick="renderDay(\'TUESDAY\')">'+(day=='TUESDAY'?day: 'Th')+'</p>';
+            timehtml += '<p class="timebar timebarday" onClick="renderDay(\'WEDNESDAY\')">'+(day=='WEDNESDAY'?day: 'We')+'</p>';
+            timehtml += '<p class="timebar timebarday" onClick="renderDay(\'THURSDAY\')">'+(day=='THURSDAY'?day: 'Th')+'</p>';
+            timehtml += '<p class="timebar timebarday" onClick="renderDay(\'FRIDAY\')">'+(day=='FRIDAY'?day: 'Fr')+'</p>';
+            timehtml += '</div>';
+            for (let i = 0; i < daydata.length; i++) {
+                let time = daydata[i][0];
+                let classrooms = daydata[i][1];
+
+                timehtml += '<p class="timebar" id="T'+time+'">' +time+ '</p>';
+                timehtml += '<div class="classroom-box">';
+                for (let j = 0; j < classrooms.length; j++) {
+                    timehtml += '<span class="classroom">' + classrooms[j] + '</span class="classroom">';
+                }
+                timehtml += '</div>';
+
+            }
+            $('#box').html(timehtml);
+            if (day == days[new Date().getDay()].toUpperCase()) {
+
+                let hour = new Date().getHours();
+                hour = hour.toString().length == 2 ? hour : '0' + hour;
+                hour += '00';
+                $("#T"+hour).css({'background-color': '#fdf7e9'})
+                try {
+                    let offset = $("#T"+hour).offset();
+                    sleep(500).then(() => {
+                        $('html, body').animate({
+                            scrollTop: offset.top - 100,
+                            scrollLeft: offset.left
+                        }, 1100);
+                    });
+                    dt = 60 - new Date().getMinutes()
+                    $("#T"+hour).html(hour+' <small>('+dt+'m left)</small>');
+                } catch(TypeError) {
+
+                }
+            }
+        }
+
+        $(document).ready(function() {
+            let day = days[new Date().getDay()];
+            if (day == 'SATURDAY' | day == 'SUNDAY') {
+                day = 'MONDAY';
+            }
+            renderDay(day);
+
+        });
+
+    </script>
+</body>
+</html>
